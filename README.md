@@ -11,15 +11,15 @@ With 25048 training examples, 50 training steps and a learning rate of 10^-4, we
 
 1. Clone this repo
 
-2. Install the dependencies
+2. Install the dependencies with the following:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Download the data from [Kaggle](https://www.kaggle.com/competitions/lmsys-chatbot-arena/data) and add it to the same folder.
+3. Download the data from [Kaggle](https://www.kaggle.com/competitions/lmsys-chatbot-arena/data) and add it to the same folder
 
-4. Run the following lines
+4. Run the following:
 
 ```bash
 python prepare_ft_dataset.py
