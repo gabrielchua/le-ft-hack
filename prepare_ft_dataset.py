@@ -4,7 +4,7 @@ prepare_ft_dataset.py
 import json
 import pandas as pd
 
-df = pd.read_csv("lmsys-chatbot-arena/train.csv")
+df = pd.read_csv("data/lmsys-chatbot-arena/train.csv")
 
 # Only keep prompts that are at least 100 chars
 df = df[df.prompt.apply(len) > 100]
@@ -34,6 +34,6 @@ def create_jsonl(file_name, df):
             outfile.write('\n')
 
 
-create_jsonl("arena_train.jsonl", df_train)
-create_jsonl("arena_val.jsonl", df_val)
-create_jsonl("arena_test.jsonl", df_test)
+create_jsonl("data/arena_train.jsonl", df_train)
+create_jsonl("data/arena_val.jsonl", df_val)
+create_jsonl("data/arena_test.jsonl", df_test)
