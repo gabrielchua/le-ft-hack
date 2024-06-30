@@ -68,26 +68,31 @@ N = len(dataset)
 results = []
 
 # Set-up Async Inference
-async def predict_preference(session, system_message, prompt):
+async def predict_preference(session, system_message, prompt, idx):
     """ Use fine-tune model to predict preference """
     print(prompt)
     chat_response = await session.chat(
         model=retrieved_job.fine_tuned_model,
-        messages=[ChatMessage(role='system', content=system_message),
-                  ChatMessage(role='user', content=prompt)]
+        messages=[{"role": "system", "content": system_message},
+                  {"role": "user", "content": prompt}]
     )
-    return chat_response.choices[0].message.content
+    return idx, chat_response.choices[0].message['content']
 
-async def gather_predictions(number_predictions):
+async def gather_predictions(dataset):
     """ Gather Predictions """
-    tasks = [predict_preference(async_client, dataset[i]['messages'][0]['content'], dataset[i]['messages'][1]['content']) for i in range(number_predictions)]
+    tasks = [predict_preference(async_client, dataset[i]['messages'][0]['content'], dataset[i]['messages'][1]['content'], i) for i in range(len(dataset))]
     predictions = []
-    for i in range(0, number_predictions, 20):  # Process in chunks of 20
+    for i in range(0, len(dataset), 20):  # Process in chunks of 20
         chunk = tasks[i:i+20]
         predictions.extend(await asyncio.gather(*chunk))
     return predictions
 
-predictions = asyncio.run(gather_predictions(N))
+# Execute async function to get predictions
+predictions_with_indices = asyncio.run(gather_predictions(dataset))
+
+# Ensure the original indexing is maintained and extract predictions
+predictions_with_indices.sort(key=lambda x: x[0])
+predictions = [pred[1] for pred in predictions_with_indices]
 
 # Sync inference
 # for i in range(0, N):
@@ -101,10 +106,10 @@ predictions = asyncio.run(gather_predictions(N))
 #     results.append(prediction == ground_truth)
 #     print(f"For entry {i}, {ground_truth} {prediction}")
 
-# Evaluation 
+# Evaluation
 ground_truth = [dataset[i]['messages'][2]['content'] for i in range(N)]
 
 predictions = np.array(predictions)
 ground_truth = np.array(ground_truth)
 
-print(f"Accuracy is: {np.mean(predictions==ground_truth)}")
+print(f"Accuracy is: {np.mean(predictions == ground_truth)}")
