@@ -5,7 +5,9 @@ Submission for [Mistral Finetuning Hackathon - June 2024](https://mistral.ai/new
 
 We fine-tune `mistral-small-latest` to predict which LLM response will be preferred by a human, using data from the lmsys chatbot arena.
 
-With 25048 training examples, 50 training steps and a learning rate of 10^-4, we achieve an accuracy of ~42%. 
+The dataset contains one prompt, responses from two different LLMs, and which of the LLM gave the preferred answer or whether it was a tie.
+
+With 100K+ training examples, 50 training steps and a learning rate of 10^-4, we achieve an accuracy of ~42%. This is 9% point higher than a naive baseline of randomly guessing.
 
 ## Set-up
 
